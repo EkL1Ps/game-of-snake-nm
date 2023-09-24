@@ -25,15 +25,19 @@ snake[0] = {
   x: 9 * box,
   y: 10 * box,
 };
+let bodySegments = [];
 
 document.addEventListener("keydown", direction);
+
 let dir;
 function direction(event) {
   if (event.keyCode == 37 && dir != "right") dir = "left";
   else if (event.keyCode == 38 && dir != "down") dir = "up";
   else if (event.keyCode == 39 && dir != "left") dir = "right";
   else if (event.keyCode == 40 && dir != "up") dir = "down";
+  else if (event.keyCode == 32) dir = "space";
 }
+
 function youWin() {
   if (score == 50) {
     clearInterval(game);
@@ -66,6 +70,14 @@ function drawGame() {
       box
     );
   }
+  for (let i = 1; i < snake.length; i++) {
+    bodySegments.push({ x: snake[i].x, y: snake[i].y });
+  }
+  function drawBody() {
+    for (let i = 0; i < bodySegments.length; i++) {
+      ctx.drawImage(snakesBody, bodySegments[i].x, bodySegments[i].y, box, box);
+    }
+  }
 
   ctx.fillStyle = "white";
   ctx.font = "50px Roboto";
@@ -74,6 +86,7 @@ function drawGame() {
   let snakeX = snake[0].x;
   let snakeY = snake[0].y;
 
+  //score counter
   if (snakeX == food.x && snakeY == food.y) {
     score++;
     food = {
@@ -98,6 +111,10 @@ function drawGame() {
   if (dir == "right") snakeX += box;
   if (dir == "up") snakeY -= box;
   if (dir == "down") snakeY += box;
+  if (dir == "space") {
+    clearInterval(drawGame);
+    clearInterval(drawBody);
+  }
 
   let newBody = {
     x: snakeX,
