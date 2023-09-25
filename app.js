@@ -13,6 +13,7 @@ const snakesBody = new Image();
 snakesBody.src = "images/snakes-body.png";
 
 isPaused = false;
+isGameOver = false;
 
 let box = 32;
 let score = 0;
@@ -37,15 +38,39 @@ function direction(event) {
   else if (event.keyCode == 38 && dir != "down") dir = "up";
   else if (event.keyCode == 39 && dir != "left") dir = "right";
   else if (event.keyCode == 40 && dir != "up") dir = "down";
-  else if (event.keyCode == 32) {
+  else if (event.keyCode == 32 && isGameOver == false) {
     if (isPaused) {
       isPaused = false;
       game = setInterval(drawGame, 70);
     } else {
       isPaused = true;
       clearInterval(game);
+      ctx.beginPath();
+      ctx.strokeStyle = "red";
+      ctx.fillStyle = "yellow";
+      ctx.lineWidth = "1";
+      ctx.rect(5 * box, 9 * box, 9 * box, 3 * box);
+      ctx.fill();
+      ctx.stroke();
+      ctx.font = "50px Roboto Red";
+      ctx.fillStyle = "red";
+      ctx.fillText("Pause", 7.8 * box, 11 * box);
     }
   }
+}
+function gameOverItx() {
+  ctx.beginPath();
+  ctx.strokeStyle = "red";
+  ctx.fillStyle = "yellow";
+  ctx.lineWidth = "1";
+  ctx.rect(3 * box, 8 * box, 13 * box, 5 * box);
+  ctx.fill();
+  ctx.stroke();
+  ctx.font = "40px Roboto Red";
+  ctx.fillStyle = "red";
+  ctx.fillText("Game Over!", 6.8 * box, 9.5 * box);
+  ctx.font = "30px Roboto Red";
+  ctx.fillText(`Your finalscore: ${score};`, 6 * box, 12 * box);
 }
 
 function youWin() {
@@ -61,7 +86,8 @@ function eatBody(head, arr) {
   for (let i = 0; i < arr.length; i++) {
     if (head.x == arr[i].x && head.y == arr[i].y) {
       clearInterval(game);
-      alert(`Game Over! Your finalscore: ${score}; Press f5 to restart`);
+      gameOverItx();
+      isGameOver = true;
     }
   }
 }
@@ -81,7 +107,7 @@ function drawGame() {
         box
       );
     }
-
+    ctx.beginPath();
     ctx.fillStyle = "white";
     ctx.font = "50px Roboto";
     ctx.fillText(score, box * 2.5, box * 1.7);
@@ -107,7 +133,8 @@ function drawGame() {
       snakeY > box * 17
     ) {
       clearInterval(game);
-      alert(`Game Over! Your finalscore: ${score}; Press f5 to restart`);
+      gameOverItx();
+      isGameOver = true;
     }
 
     if (dir == "left") snakeX -= box;
