@@ -23,6 +23,20 @@ let food = {
   y: Math.floor(Math.random() * 15 + 3) * box,
 };
 
+function generateFoodPosition() {
+  let newFood;
+  do {
+    newFood = {
+      x: Math.floor(Math.random() * 17 + 1) * box,
+      y: Math.floor(Math.random() * 15 + 3) * box,
+    };
+  } while (
+    snake.some((segment) => segment.x === newFood.x && segment.y === newFood.y)
+  );
+
+  food = newFood;
+}
+
 let snake = [];
 snake[0] = {
   x: 9 * box,
@@ -118,10 +132,7 @@ function drawGame() {
     //score counter
     if (snakeX == food.x && snakeY == food.y) {
       score++;
-      food = {
-        x: Math.floor(Math.random() * 17 + 1) * box,
-        y: Math.floor(Math.random() * 15 + 3) * box,
-      };
+      generateFoodPosition();
     } else {
       snake.pop();
     }
